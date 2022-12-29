@@ -552,6 +552,7 @@ def main():
     cyphertext = aes.encrypt(data)
     plaintext = aes.decrypt(cyphertext) 
     print(cyphertext)
+    print("")
     print(plaintext)
     
     
