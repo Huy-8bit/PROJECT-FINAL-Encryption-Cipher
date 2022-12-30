@@ -1,3 +1,4 @@
+import binascii
 from binascii import hexlify, unhexlify
 
 from unittest import TestCase, TestProgram
@@ -6,7 +7,6 @@ from string import ascii_letters
 from os import urandom
 import random
 import struct
-from Crypto.Cipher import AES
 import os
 
 
@@ -27,13 +27,16 @@ class AES(object):
                 self.key = "%032x" % 0
             elif len(key) <= 16:
                 self.Nb, self.Nk, self.Nr = 4, 4, 10
-                self.key = "%032x" % int(''.join("%02x" % i for i in bytes(key, 'utf-8')), 16)
+                self.key = "%032x" % int(
+                    ''.join("%02x" % i for i in bytes(key, 'utf-8')), 16)
             elif len(key) <= 24:
                 self.Nb, self.Nk, self.Nr = 4, 6, 12
-                self.key = "%048x" % int(''.join("%02x" % i for i in bytes(key, 'utf-8')), 16)
+                self.key = "%048x" % int(
+                    ''.join("%02x" % i for i in bytes(key, 'utf-8')), 16)
             elif len(key) <= 32:
                 self.Nb, self.Nk, self.Nr = 4, 8, 14
-                self.key = "%064x" % int(''.join("%02x" % i for i in bytes(key, 'utf-8')), 16)
+                self.key = "%064x" % int(
+                    ''.join("%02x" % i for i in bytes(key, 'utf-8')), 16)
             else:
                 raise ValueError("Key can not be longer than 32 characters.")
         else:
@@ -47,7 +50,8 @@ class AES(object):
             if iv == "":
                 self.iv = "%032x" % 0
             elif len(iv) <= 16:
-                self.iv = "%032x" % int(''.join("%02x" % i for i in bytes(iv, 'utf-8')), 16)
+                self.iv = "%032x" % int(
+                    ''.join("%02x" % i for i in bytes(iv, 'utf-8')), 16)
             else:
                 raise ValueError("IV can not be longer than 16 characters.")
         elif iv is not None:
@@ -127,7 +131,8 @@ class AES(object):
             0x44, 0x11, 0x92, 0xd9, 0x23, 0x20, 0x2e, 0x89, 0xb4, 0x7c, 0xb8, 0x26, 0x77, 0x99, 0xe3, 0xa5,
             0x67, 0x4a, 0xed, 0xde, 0xc5, 0x31, 0xfe, 0x18, 0x0d, 0x63, 0x8c, 0x80, 0xc0, 0xf7, 0x70, 0x07]
 
-        self.rcon = [0x00, 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1B, 0x36]
+        self.rcon = [0x00, 0x01, 0x02, 0x04, 0x08,
+                     0x10, 0x20, 0x40, 0x80, 0x1B, 0x36]
 
     @staticmethod
     def pad(data, block=16):
@@ -150,7 +155,8 @@ class AES(object):
     def state_matrix(state):
         new_state = []
         for x in range(4):
-            new_state += [state[0 + x], state[4 + x], state[8 + x], state[12 + x]]
+            new_state += [state[0 + x], state[4 + x],
+                          state[8 + x], state[12 + x]]
         return new_state
 
     @staticmethod
@@ -158,7 +164,8 @@ class AES(object):
         columns = [state[x:x + 4] for x in range(0, 16, 4)]
         new_state = []
         for x in range(4):
-            new_state += [columns[0][x], columns[1][x], columns[2][x], columns[3][x]]
+            new_state += [columns[0][x], columns[1]
+                          [x], columns[2][x], columns[3][x]]
         return new_state
 
     @staticmethod
@@ -199,10 +206,14 @@ class AES(object):
         columns = [state[x:x + 4] for x in range(0, 16, 4)]
         output = []
         for x in range(4):
-            output.append(self.galois(columns[0][x], 2) ^ self.galois(columns[3][x], 1) ^ self.galois(columns[2][x], 1) ^ self.galois(columns[1][x], 3))
-            output.append(self.galois(columns[1][x], 2) ^ self.galois(columns[0][x], 1) ^ self.galois(columns[3][x], 1) ^ self.galois(columns[2][x], 3))
-            output.append(self.galois(columns[2][x], 2) ^ self.galois(columns[1][x], 1) ^ self.galois(columns[0][x], 1) ^ self.galois(columns[3][x], 3))
-            output.append(self.galois(columns[3][x], 2) ^ self.galois(columns[2][x], 1) ^ self.galois(columns[1][x], 1) ^ self.galois(columns[0][x], 3))
+            output.append(self.galois(columns[0][x], 2) ^ self.galois(
+                columns[3][x], 1) ^ self.galois(columns[2][x], 1) ^ self.galois(columns[1][x], 3))
+            output.append(self.galois(columns[1][x], 2) ^ self.galois(
+                columns[0][x], 1) ^ self.galois(columns[3][x], 1) ^ self.galois(columns[2][x], 3))
+            output.append(self.galois(columns[2][x], 2) ^ self.galois(
+                columns[1][x], 1) ^ self.galois(columns[0][x], 1) ^ self.galois(columns[3][x], 3))
+            output.append(self.galois(columns[3][x], 2) ^ self.galois(
+                columns[2][x], 1) ^ self.galois(columns[1][x], 1) ^ self.galois(columns[0][x], 3))
         return self.state_matrix(output)
 
     def inv_mix_columns(self, state):
@@ -210,10 +221,14 @@ class AES(object):
         columns = [state[x:x + 4] for x in range(0, 16, 4)]
         output = []
         for x in range(4):
-            output.append(self.galois(columns[0][x], 14) ^ self.galois(columns[3][x], 9) ^ self.galois(columns[2][x], 13) ^ self.galois(columns[1][x], 11))
-            output.append(self.galois(columns[1][x], 14) ^ self.galois(columns[0][x], 9) ^ self.galois(columns[3][x], 13) ^ self.galois(columns[2][x], 11))
-            output.append(self.galois(columns[2][x], 14) ^ self.galois(columns[1][x], 9) ^ self.galois(columns[0][x], 13) ^ self.galois(columns[3][x], 11))
-            output.append(self.galois(columns[3][x], 14) ^ self.galois(columns[2][x], 9) ^ self.galois(columns[1][x], 13) ^ self.galois(columns[0][x], 11))
+            output.append(self.galois(columns[0][x], 14) ^ self.galois(
+                columns[3][x], 9) ^ self.galois(columns[2][x], 13) ^ self.galois(columns[1][x], 11))
+            output.append(self.galois(columns[1][x], 14) ^ self.galois(
+                columns[0][x], 9) ^ self.galois(columns[3][x], 13) ^ self.galois(columns[2][x], 11))
+            output.append(self.galois(columns[2][x], 14) ^ self.galois(
+                columns[1][x], 9) ^ self.galois(columns[0][x], 13) ^ self.galois(columns[3][x], 11))
+            output.append(self.galois(columns[3][x], 14) ^ self.galois(
+                columns[2][x], 9) ^ self.galois(columns[1][x], 13) ^ self.galois(columns[0][x], 11))
         return output
 
     def cipher(self, expanded_key, data):
@@ -251,7 +266,8 @@ class AES(object):
         while i < self.Nb * (self.Nr + 1):
             temp = w[i - 1]
             if i % self.Nk == 0:
-                temp = self.sub_word(self.rot_word(temp)) ^ (self.rcon[i // self.Nk] << 24)
+                temp = self.sub_word(self.rot_word(temp)) ^ (
+                    self.rcon[i // self.Nk] << 24)
             elif self.Nk > 6 and i % self.Nk == 4:
                 temp = self.sub_word(temp)
             w.append(w[i - self.Nk] ^ temp)
@@ -261,7 +277,8 @@ class AES(object):
         for x in range(0, len(w), 4):
             state = []
             for y in range(4):
-                state += [w[x + y] >> 24 & 0xff, w[x + y] >> 16 & 0xff, w[x + y] >> 8 & 0xff, w[x + y] & 0xff]
+                state += [w[x + y] >> 24 & 0xff, w[x + y] >> 16 &
+                          0xff, w[x + y] >> 8 & 0xff, w[x + y] & 0xff]
             new_state.append(self.state_matrix(state))
         return new_state
 
@@ -287,13 +304,15 @@ class AES(object):
             data = self.pad(bytes(data, 'utf-8'))
             blocks = [unhexlify(self.iv.encode())]
             for x in range(0, len(data), 16):
-                blocks.append(self.cipher(expanded_key, self.xor(blocks[-1], data[x:x + 16])))
+                blocks.append(self.cipher(
+                    expanded_key, self.xor(blocks[-1], data[x:x + 16])))
             return hexlify(bytes(y for x in blocks[1:] for y in x)).decode()
         elif isinstance(data, bytes):
             data = self.pad(data)
             blocks = [unhexlify(self.iv.encode())]
             for x in range(0, len(data), 16):
-                blocks.append(self.cipher(expanded_key, self.xor(blocks[-1], data[x:x + 16])))
+                blocks.append(self.cipher(
+                    expanded_key, self.xor(blocks[-1], data[x:x + 16])))
             return bytes(y for x in blocks[1:] for y in x)
         else:
             raise TypeError("Data must be of type 'str' or 'bytes'.")
@@ -302,12 +321,14 @@ class AES(object):
         if isinstance(data, str):
             data = [unhexlify(data[y:y + 32]) for y in range(0, len(data), 32)]
             blocks = [unhexlify(self.iv.encode())] + data
-            decrypted_blocks = [self.xor(self.inv_cipher(expanded_key, data[x]), blocks[x]) for x in range(len(data))]
+            decrypted_blocks = [self.xor(self.inv_cipher(
+                expanded_key, data[x]), blocks[x]) for x in range(len(data))]
             return ''.join(chr(x) for x in self.unpad([y for x in decrypted_blocks for y in x]))
         elif isinstance(data, bytes):
             data = [data[y:y + 16] for y in range(0, len(data), 16)]
             blocks = [unhexlify(self.iv.encode())] + data
-            decrypted_blocks = [self.xor(self.inv_cipher(expanded_key, data[x]), blocks[x]) for x in range(len(data))]
+            decrypted_blocks = [self.xor(self.inv_cipher(
+                expanded_key, data[x]), blocks[x]) for x in range(len(data))]
             return self.unpad(bytes(y for x in decrypted_blocks for y in x))
         else:
             raise TypeError("Data must be of type 'str' or 'bytes'.")
@@ -315,11 +336,13 @@ class AES(object):
     def ecb_encrypt(self, data, expanded_key):
         if isinstance(data, str):
             data = self.pad(bytes(data, 'utf-8'))
-            blocks = [self.cipher(expanded_key, data[x:x + 16]) for x in range(0, len(data), 16)]
+            blocks = [self.cipher(expanded_key, data[x:x + 16])
+                      for x in range(0, len(data), 16)]
             return hexlify(bytes(y for x in blocks for y in x)).decode()
         elif isinstance(data, bytes):
             data = self.pad(data)
-            blocks = [self.cipher(expanded_key, data[x:x + 16]) for x in range(0, len(data), 16)]
+            blocks = [self.cipher(expanded_key, data[x:x + 16])
+                      for x in range(0, len(data), 16)]
             return bytes(y for x in blocks for y in x)
         else:
             raise TypeError("Data must be of type 'str' or 'bytes'.")
@@ -327,36 +350,39 @@ class AES(object):
     def ecb_decrypt(self, data, expanded_key):
         if isinstance(data, str):
             data = unhexlify(data)
-            blocks = [self.inv_cipher(expanded_key, data[x:x + 16]) for x in range(0, len(data), 16)]
+            blocks = [self.inv_cipher(expanded_key, data[x:x + 16])
+                      for x in range(0, len(data), 16)]
             return ''.join(chr(x) for x in self.unpad([y for x in blocks for y in x]))
         elif isinstance(data, bytes):
-            blocks = [self.inv_cipher(expanded_key, data[x:x + 16]) for x in range(0, len(data), 16)]
+            blocks = [self.inv_cipher(expanded_key, data[x:x + 16])
+                      for x in range(0, len(data), 16)]
             return self.unpad(bytes(y for x in blocks for y in x))
         else:
             raise TypeError("Data must be of type 'str' or 'bytes'.")
-        
+
+
 def load_data(file_path):
     with open(file_path, 'rb') as file:
         return file.read()
 
 
-import binascii
-
 def generate_random_key():
     # Generate a random 32-character hexadecimal string
-    random_key = ''.join([random.choice('0123456789abcdef') for i in range(32)])
+    random_key = ''.join([random.choice('0123456789abcdef')
+                         for i in range(32)])
     # Convert the hexadecimal string to an integer
     key = int(random_key, 16)
     print(f"Random key: {key}")
     return key
 
 
-
 def encode(text, aes):
     cyphertext = aes.encrypt(text)
     return cyphertext
+
+
 def decode(cyphertext, aes):
-    plaintext = aes.decrypt(cyphertext) 
+    plaintext = aes.decrypt(cyphertext)
     return plaintext
 
 # def main():
@@ -365,5 +391,3 @@ def decode(cyphertext, aes):
 #     aes = AES(key)
 #     cyphertext = encode(data, aes)
 #     plaintext = decode(cyphertext, aes)
-    
-    
