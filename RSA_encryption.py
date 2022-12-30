@@ -52,54 +52,56 @@ def random_prime(size_bit):
 
 text = "!@#$%^&*()-_+=|;:',.<>/?0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!,. "
 
+def encode(plainText):
+    p = random_prime(512)
+    print("p=", p)
+    q = random_prime(512)
+    print("q=", q)
+    p = int(p)
+    q = int(q)
+    n = p * q
+    phiN = (p-1) * (q-1)
 
-p = random_prime(512)
-print("p=", p)
-q = random_prime(512)
-print("q=", q)
-p = int(p)
-q = int(q)
-n = p * q
-phiN = (p-1) * (q-1)
-
-for i in range(1, 10000):
-    if 0 != phiN % i:
-        publicKey = round(i)
-        break
-
-for j in range(0, 10000):
-    d = 1 + (j * phiN)
-    d2 = d / publicKey
-    if 0 == d % publicKey:
-        privateKey = round(d2)
-        break
-
-
-print("modulo=", n)
-print("public key=", publicKey)
-print("private key=", privateKey)
-plainText = input("Enter plain text: ")
-encryptedText = ""
-for k in plainText:
-    m = 0
-    for l in text:
-        if k == l:
-            if m < 10:
-                m = m + 00
-            encryptedText = encryptedText + (str((m ** publicKey) % n)) + " "
+    for i in range(1, 10000):
+        if 0 != phiN % i:
+            publicKey = round(i)
             break
-        m += 1
-print("Encrypted text: ", encryptedText)
 
-decryptedText = ""
-for s in encryptedText.split(" "):
-    for k in text:
+    for j in range(0, 10000):
+        d = 1 + (j * phiN)
+        d2 = d / publicKey
+        if 0 == d % publicKey:
+            privateKey = round(d2)
+            break
+
+
+    print("modulo=", n)
+    print("public key=", publicKey)
+    print("private key=", privateKey)
+  
+    encryptedText = ""
+    for k in plainText:
         m = 0
         for l in text:
             if k == l:
-                if s == (str((m ** publicKey) % n)):
-                    decryptedText = decryptedText + l
+                if m < 10:
+                    m = m + 00
+                encryptedText = encryptedText + (str((m ** publicKey) % n)) + " "
                 break
             m += 1
+    print("Encrypted text: ", encryptedText)
 
-print("Decrypted text: ", decryptedText)
+    decryptedText = ""
+    for s in encryptedText.split(" "):
+        for k in text:
+            m = 0
+            for l in text:
+                if k == l:
+                    if s == (str((m ** publicKey) % n)):
+                        decryptedText = decryptedText + l
+                    break
+                m += 1
+
+    print("Decrypted text: ", decryptedText)
+
+
