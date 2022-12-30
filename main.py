@@ -81,9 +81,6 @@ def reading_text():
         
 
 print("Running main.py")
-# sending_text()
+sending_text()
 reading_text()
 
-
-# 149904544555546863715321517132090325075
-# d1e501d17f11414fa95f6dcedef67a38
