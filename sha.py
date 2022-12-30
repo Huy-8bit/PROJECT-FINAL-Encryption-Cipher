@@ -55,7 +55,7 @@ for k in data:
             encryptedText = encryptedText + (str((m ** publicKey) % n)) + " "
             break
         m+=1
-print("Encrypted text: ", encryptedText)
+print("Encrypted message : ", encryptedText)
 
 decryptedText = ""
 #decryptedText = input("Enter encrypted text: ")
@@ -70,4 +70,4 @@ for s in encryptedText.split(" "):
                 break
             m += 1
 
-print("Decrypted text: ", decryptedText)
+print("Bob receive message: ", decryptedText)
