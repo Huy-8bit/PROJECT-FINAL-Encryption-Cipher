@@ -204,6 +204,18 @@ def sha_224(data: bytes) -> bytes:
 # print("After hash using sha384 in library: ", sha384.hexdigest())
 # print("After hash using sha384 my code: ", sha_384(data.encode()).hex())
 
-def encode(data):
+def encode(data, change):
    # print("hash using sha256 my code")
-    return sha_256(data.encode()).hex()
+    if change == 224:
+        return sha_224(data.encode()).hex()
+    elif change == 256:
+        return sha_256(data.encode()).hex()
+    elif change == 384:
+        sha384 = hashlib.sha384()
+        sha384.update(data.encode())
+        return sha384.hexdigest()
+    elif change == 512:
+        sha512 = hashlib.sha512()
+        sha512.update(data.encode())
+        return sha512.hexdigest()
+    

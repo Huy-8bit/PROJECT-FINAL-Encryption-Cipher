@@ -2,9 +2,6 @@ import random
 import os
 
 
-#print("Running RSA encryption algorithm")
-
-
 def is_prime(n, k=10000):
     # Special cases for n <= 1 or n is even
     if n <= 1 or n % 2 == 0:
@@ -55,10 +52,11 @@ def random_prime(size_bit):
 text = "!@#$%^&*()-_+=|;:',.<>/?0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ "
 
 
-def encode(data):
-    p = random_prime(512)
+def encode(data, key_size_srt):
+    key_size = int(key_size_srt)
+    p = random_prime(key_size)
     #print("p=", p)
-    q = random_prime(512)
+    q = random_prime(key_size)
     #print("q=", q)
     p = int(p)
     q = int(q)
@@ -72,7 +70,7 @@ def encode(data):
 
     for j in range(0, 10000):
         d = 1 + (j * phiN)
-        d2 = d / publicKey
+        d2 = d // publicKey
         if 0 == d % publicKey:
             privateKey = round(d2)
             break
@@ -104,14 +102,3 @@ def decode(encryptedText, n, publicKey):
                 m += 1
 
     return decryptedText
-
-
-
-# def test():
-#     data = "Hello World"
-#     encryptedText, n, publicKey = encode(data)
-#     print("Encrypted message : ", encryptedText)
-#     decryptedText = decode(encryptedText, n, publicKey)
-#     print("Decrypted message : ", decryptedText)
-    
-# test()
