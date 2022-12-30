@@ -5,7 +5,7 @@ import os
 print("Running RSA encryption algorithm")
 
 
-def is_prime(n, k=1000):
+def is_prime(n, k=10000):
     # Special cases for n <= 1 or n is even
     if n <= 1 or n % 2 == 0:
         return False
@@ -48,10 +48,9 @@ def random_prime(size_bit):
         # Set the 2 least significant bits to 1 (to ensure p is odd)
         p |= 3
         if is_prime(p):
-
             return p
 
-text = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!,. "
+text = "!@#$%^&*()-_+=|;:',.<>/?0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!,. "
 
 
 p = random_prime(512)
