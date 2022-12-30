@@ -1,25 +1,6 @@
 import random
-import os
 
-def random_prime(size_bit):
-    while True:
-        # Generate a random number with the specified number of bits
-        p = random.getrandbits(size_bit)
-        # Set the 2 least significant bits to 1 (to ensure p is odd)
-        p |= 3
-        if is_prime(p):
-            
-            return p
 
-def is_prime(n):
-    if n in (2, 3):
-        return True
-    if n == 1 or n % 2 == 0:
-        return False
-    for i in range(3, int(n ** 0.5) + 1, 2):
-        if n % i == 0:
-            return False
-    return True
 
 
 
@@ -37,10 +18,7 @@ keyNumber = 1
 
 
 
-p = random_prime(128)
-print("p=",p)
-q = random_prime(128)
-print("q=",q)
+p, q = input("enter two key PRIME numbers seperated by space ").split(" ")
 p = int(p)
 q = int(q)
 n = p * q
@@ -58,7 +36,8 @@ for j in range(0, 10000):
         privateKey = round(d2)
         break
     
-
+print("p=",p)
+print("q=",q)
 print("modulo=",n)
 print("public key=",publicKey)
 print("private key=",privateKey)
