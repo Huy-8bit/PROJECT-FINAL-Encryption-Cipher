@@ -4,7 +4,10 @@ from unittest import TestCase, TestProgram
 from random import randrange, choice
 from string import ascii_letters
 from os import urandom
-
+import random
+import struct
+from Crypto.Cipher import AES
+import os
 
 
 class AES(object):
@@ -332,27 +335,35 @@ class AES(object):
         else:
             raise TypeError("Data must be of type 'str' or 'bytes'.")
         
-
-def load_file(filename):
-    with open(filename, 'rb') as f:
-        data = f.read()
-    return data
+def load_data(file_path):
+    with open(file_path, 'rb') as file:
+        return file.read()
 
 
+import binascii
+
+def generate_random_key():
+    # Generate a random 32-character hexadecimal string
+    random_key = ''.join([random.choice('0123456789abcdef') for i in range(32)])
+    # Convert the hexadecimal string to an integer
+    key = int(random_key, 16)
+    print(f"Random key: {key}")
+    return key
 
 
-def main():
-# A simple example of encrypting a string with ECB mode!
 
-    key = 0x000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f
-
-    data = load_file('doc.txt')
-    aes = AES(key)
-    cyphertext = aes.encrypt(data)
+def encode(text, aes):
+    cyphertext = aes.encrypt(text)
+    return cyphertext
+def decode(cyphertext, aes):
     plaintext = aes.decrypt(cyphertext) 
-    print(cyphertext)
-    print("")
-    print(plaintext)
+    return plaintext
+
+# def main():
+#     key = generate_random_key()
+#     data = input("Enter the data to be encrypted:")
+#     aes = AES(key)
+#     cyphertext = encode(data, aes)
+#     plaintext = decode(cyphertext, aes)
     
     
-main()
