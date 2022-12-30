@@ -44,3 +44,18 @@ for k in plainText:
             break
         m+=1
 print("Encrypted text: ", encryptedText)
+
+decryptedText = ""
+#decryptedText = input("Enter encrypted text: ")
+# plainText = ""
+for s in encryptedText.split(" "):
+    for k in text:
+        m = 0
+        for l in text:
+            if k == l:
+                if s == (str((m ** publicKey) % n)):
+                    decryptedText = decryptedText + l
+                break
+            m += 1
+
+print("Decrypted text: ", decryptedText)
