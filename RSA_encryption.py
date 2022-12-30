@@ -2,7 +2,7 @@ import random
 import os
 
 
-print("Running RSA encryption algorithm")
+#print("Running RSA encryption algorithm")
 
 
 def is_prime(n, k=10000):
@@ -41,6 +41,7 @@ def is_prime(n, k=10000):
     # If the test passes for all k values, n is probably prime
     return True
 
+
 def random_prime(size_bit):
     while True:
         # Generate a random number with the specified number of bits
@@ -50,13 +51,15 @@ def random_prime(size_bit):
         if is_prime(p):
             return p
 
-text = "!@#$%^&*()-_+=|;:',.<>/?0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!,. "
 
-def encode(plainText):
+text = "!@#$%^&*()-_+=|;:',.<>/?0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ "
+
+
+def encode(data):
     p = random_prime(512)
-    print("p=", p)
+    #print("p=", p)
     q = random_prime(512)
-    print("q=", q)
+    #print("q=", q)
     p = int(p)
     q = int(q)
     n = p * q
@@ -73,24 +76,22 @@ def encode(plainText):
         if 0 == d % publicKey:
             privateKey = round(d2)
             break
-
-
-    print("modulo=", n)
-    print("public key=", publicKey)
-    print("private key=", privateKey)
-  
+        
     encryptedText = ""
-    for k in plainText:
+    for k in data:
         m = 0
         for l in text:
             if k == l:
                 if m < 10:
                     m = m + 00
-                encryptedText = encryptedText + (str((m ** publicKey) % n)) + " "
+                encryptedText = encryptedText + \
+                    (str((m ** publicKey) % n)) + " "
                 break
             m += 1
-    print("Encrypted text: ", encryptedText)
+    return encryptedText, n, publicKey
 
+
+def decode(encryptedText, n, publicKey):
     decryptedText = ""
     for s in encryptedText.split(" "):
         for k in text:
@@ -102,6 +103,15 @@ def encode(plainText):
                     break
                 m += 1
 
-    print("Decrypted text: ", decryptedText)
+    return decryptedText
 
 
+
+# def test():
+#     data = "Hello World"
+#     encryptedText, n, publicKey = encode(data)
+#     print("Encrypted message : ", encryptedText)
+#     decryptedText = decode(encryptedText, n, publicKey)
+#     print("Decrypted message : ", decryptedText)
+    
+# test()

@@ -1,7 +1,7 @@
 from bitarray import bitarray
 from bitarray import  util
 from textwrap import wrap
-from consts import Const
+from SHA.consts import Const
 W = 64 
 M = 1 << W
 FF = M - 1

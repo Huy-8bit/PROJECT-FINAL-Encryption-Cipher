@@ -347,17 +347,20 @@ def generate_random_key():
     random_key = ''.join([random.choice('0123456789abcdef') for i in range(32)])
     # Convert the hexadecimal string to an integer
     key = int(random_key, 16)
-    print(f"Random key: {key}")
+    #print(f"Random key: {key}")
     return key
 
 
 
-def encode(text, aes):
+def encode(text):
+    key = generate_random_key()
+    aes = AES(key)
     cyphertext = aes.encrypt(text)
-    return cyphertext
-def decode(cyphertext, aes):
+    return cyphertext , key
+def decode(cyphertext, key):
+    aes = AES(key)
     plaintext = aes.decrypt(cyphertext) 
-    return plaintext
+    return plaintext 
 
 # def main():
 #     key = generate_random_key()

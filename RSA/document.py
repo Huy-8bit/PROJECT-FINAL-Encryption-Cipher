@@ -68,3 +68,20 @@ for s in encryptedText.split(" "):
 print("Decrypted text: ", decryptedText)
 
 
+
+
+
+
+def decode(encryptedText, n, publicKey):
+    decryptedText = ""
+    for s in encryptedText.split(" "):
+        for k in text:
+            m = 0
+            for l in text:
+                if k == l:
+                    if s == (str((m ** publicKey) % n)):
+                        decryptedText = decryptedText + l
+                    break
+                m += 1
+
+    return decryptedText
