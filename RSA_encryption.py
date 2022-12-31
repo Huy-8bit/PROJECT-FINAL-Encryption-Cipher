@@ -117,14 +117,14 @@ def encode(data, publicKey, n):
     return encryptedText
 
 
-def decode(encryptedText, n, publicKey):
+def decode(encryptedText, n, privateKey):
     decryptedText = ""
     for s in encryptedText.split(" "):
         for k in text:
             m = 0
             for l in text:
                 if k == l:
-                    if s == (str((m ** publicKey) % n)):
+                    if s == (str((m ** privateKey) % n)):
                         decryptedText = decryptedText + l
                     break
                 m += 1
