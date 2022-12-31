@@ -171,6 +171,23 @@ class AES(object):
         self.rcon = [0x00, 0x01, 0x02, 0x04, 0x08,
                      0x10, 0x20, 0x40, 0x80, 0x1B, 0x36]
 
+
+# The __init__ function sets the following class attributes based on the input key and iv:
+
+# Nb: The number of columns in the state matrix. This is set to 4 for all key sizes.
+# Nk: The number of 32-bit words in the key. This is set to 4 for 128-bit keys, 6 for 192-bit keys, and 8 for 256-bit keys.
+# Nr: The number of rounds in the encryption process. This is set to 10 for 128-bit keys, 12 for 192-bit keys, and 14 for 256-bit keys.
+# key: The secret key, formatted as a hexadecimal string. If key is an integer, it is formatted as a hex string of the appropriate length (32 characters for 128-bit keys, 48 characters for 192-bit keys, and 64 characters for 256-bit keys). If key is a string, it is formatted as a hex string by converting each character in the string to its ASCII representation and then formatting the resulting bytes as a hex string.
+# iv: The initialization vector, formatted as a hexadecimal string. If iv is an integer, it is formatted as a hex string of 32 characters. If iv is a string, it is formatted as a hex string by converting each character in the string to its ASCII representation and then formatting the resulting bytes as a hex string.
+# The __init__ function also sets the following class attributes:
+
+# sbox: A lookup table containing the values for the S-box, which is used in the encryption process.
+# inv_sbox: A lookup table containing the values for the inverse S-box, which is used in the decryption process.
+# rcon: A lookup table containing the values for the round constants, which are used in the encryption process.
+# state: A matrix that holds the state of the encryption process.
+# expanded_key: The expanded key, which is derived from the secret key and is used in the encryption process.
+
+
     @staticmethod
     def pad(data, block=16):
         """
@@ -612,5 +629,3 @@ def decode(cyphertext, key):
 #     print(f"Decrypted data: {plaintext}")
 
 # main()
-    
-    
