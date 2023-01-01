@@ -51,54 +51,104 @@ def random_prime(size_bit):
             return p
 
 
+def gcd(a, b):
+    """
+    Computes the greatest common divisor of two integers using the Euclidean algorithm.
+    """
+    while b != 0:
+        a, b = b, a % b
+    return a
+
+
+def inverse(a, m):
+    """
+    Computes the modular inverse of a modulo m using the extended Euclidean algorithm.
+    """
+    m0 = m
+    x0 = 0
+    x1 = 1
+    if m == 1:
+        return 0
+    while a > 1:
+        q = a // m
+        t = m
+        m = a % m
+        a = t
+        t = x0
+        x0 = x1 - q * x0
+        x1 = t
+    if x1 < 0:
+        x1 = x1 + m0
+    return x1
+
+
+# def create_key(key_size_srt):
+#     key_size_srt = int(key_size_srt)
+#     p = random_prime(key_size_srt)
+#     q = random_prime(key_size_srt)
+#     # Compute n and phi(n)
+#     n = p * q
+#     phi_n = (p - 1) * (q - 1)
+
+#     # Choose an integer e such that 1 < e < phi(n) and e and phi(n) are coprime
+#     e = random.randint(2, phi_n-1)
+#     while gcd(e, phi_n) != 1:
+#         e = random.randint(2, phi_n-1)
+
+#     # Compute the secret exponent d such that d * e = 1 (mod phi(n))
+#     d = inverse(e, phi_n)
+
+#     # The private key is (n, d)
+#     private_key = (n, d)
+
+#     # The public key is (n, e)
+#     public_key = (n, e)
+
+#     return private_key, n, public_key
+
+
 def create_key(key_size_srt):
     key_size_srt = int(key_size_srt)
     p = random_prime(key_size_srt)
-    # print("p=", p)
     q = random_prime(key_size_srt)
-    # print("q=", q)
     p = int(p)
     q = int(q)
     n = p * q
     phiN = (p-1) * (q-1)
     privateKey = 0
     publicKey = 0
-    for i in range(1, 10000):
+    for i in range(1, 10000000):
         if 0 != phiN % i:
             publicKey = round(i)
             break
-
-    for j in range(0, 10000):
-        d = 1 + (j * phiN)
-        d2 = d // publicKey
-        if 0 == d % publicKey:
-            privateKey = round(d2)
-            break
-
-    return privateKey, n, publicKey
-
-
-def create_key(key_size_srt):
-    key_size = int(key_size_srt)
-    p = random_prime(key_size)
-    q = random_prime(key_size)
-    p = int(p)
-    q = int(q)
-    n = p * q
-    phiN = (p-1) * (q-1)
-
-    for i in range(1, 10000):
-        if 0 != phiN % i:
-            publicKey = round(i)
-            break
-
-    for j in range(0, 10000):
+    for j in range(0, 10000000):
         d = 1 + (j * phiN)
         d2 = d // publicKey
         if 0 == d % publicKey:
             privateKey = round(d2)
             break
     return privateKey, n, publicKey
+
+
+# def create_key(key_size_srt):
+#     key_size = int(key_size_srt)
+#     p = random_prime(key_size)
+#     q = random_prime(key_size)
+#     p = int(p)
+#     q = int(q)
+#     n = p * q
+#     phiN = (p-1) * (q-1)
+#     for i in range(1, 10000000):
+#         if 0 != phiN % i:
+#             publicKey = round(i)
+#             break
+#     for j in range(0, 10000000):
+#         d = 1 + (j * phiN)
+#         d2 = d // publicKey
+#         if 0 == d % publicKey:
+#             privateKey = round(d2)
+#             break
+#     return privateKey, n, publicKey
 
 
 def encode(data, publicKey, n):
@@ -132,7 +182,6 @@ def decode(encryptedText, n, privateKey):
     return decryptedText
 
 
-
 # def decode2(encryptedText, n, publicKey, privateKey):
     # decryptedText = ""
     # for s in encryptedText.split(" "):
@@ -146,4 +195,3 @@ def decode(encryptedText, n, privateKey):
     #             m += 1
 
     # return decryptedText
-    

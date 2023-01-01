@@ -8,7 +8,6 @@ from os import urandom
 import hashlib
 
 import random
-
 p = 0
 q = 0
 text = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!,."
